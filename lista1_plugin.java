@@ -36,6 +36,7 @@ public class lista1_plugin implements PlugInFilter {
 				}		
 			}
 	}
+	// Valor da media		
 	media = soma/(w * h);
 	desvpad = soma2/(w * h - 1);
 	desvpad = desvpad - (w * h) * media * media/(w * h - 1);
