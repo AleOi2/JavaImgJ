@@ -99,7 +99,7 @@ public class Biblioteca {
 	/////////////////////////////////////////////////////////////////////////
 
 	
-	// Dado um FloatProcessor, calcula a média, desvio-padrão, minimo e maximo	
+	// Dado um FloatProcessor, calcula a  desvio-padrão, média, minimo e maximo	
 	public static double[] DesviMed(FloatProcessor ip) {
 		int w = ip.getWidth();
 		int h = ip.getHeight();
@@ -160,6 +160,8 @@ public class Biblioteca {
 		}				
 		Conv.setf(x, y, (float)s);		
 	}
+
+	// Método para usar convolução
 	// Matriz 1xn, 1x1, nx1
 	public static void Prod_Conv2(FloatProcessor Conv, double s, int x, int y, 
 		    int a, int b, double[][] pesos, FloatProcessor ip1){			
@@ -189,6 +191,7 @@ public class Biblioteca {
 
 	}
 	
+    // Método para usar convolução
 	public static FloatProcessor Convolucao(FloatProcessor ip1, double[][] pesos) throws Exception{
 		int H = ip1.getHeight();int W = ip1.getWidth();
 		int a = (pesos[0].length - 1)/2;
@@ -239,6 +242,7 @@ public class Biblioteca {
 			Conv.setf(x, y, (float)s);		
 	}
 		
+    // Método para usar correlação - Igual Convolucao mudando
 	public static void Prod_Corr2(FloatProcessor Conv, double s, int x, int y, 
 		    int a, int b, double[][] pesos, FloatProcessor ip1){			
 			// pesos é tipo coluna
@@ -268,6 +272,7 @@ public class Biblioteca {
 
 	}
 	
+    // Método para usar correlação - Igual Convolucao mudando
 	public static FloatProcessor Correlacao(FloatProcessor ip1, 
 			double[][] pesos) throws Exception{
 		int H = ip1.getHeight();int W = ip1.getWidth();
@@ -307,8 +312,8 @@ public class Biblioteca {
 	/////////////////////////////////////////////////////////////////////////
     // Método para calcular gradiente
 	public static FloatProcessor Gradiente(FloatProcessor ip1) {
-		double[][] pesos_gradx = {{1, 0, -1}, {1, 0, -1}, {1, 0, -1}};
-		double[][] pesos_grady = {{1, 1, 1}, {0, 0, 0}, {-1, -1, -1}};
+		double[][] pesos_gradx = {{-1, 0, 1}, {-1, 0, 1}, {-1, 0, 1}};
+		double[][] pesos_grady = {{-1, -1, -1}, {0, 0, 0}, {1, 1, 1}};
 		int w = ip1.getWidth();
 		int h = ip1.getHeight();		
 		FloatProcessor GradX = new FloatProcessor(w, h); 
@@ -386,6 +391,84 @@ public class Biblioteca {
 		return Mod;
 	}	
 
+	/////////////////////////////////////////////////////////////////////////
+    // Método para usar Filtro de Wier
+	// Matriz nxn
+	public static void Prod_Wier(FloatProcessor Wier, int x, int y, 
+	      int a, int b, FloatProcessor ip1, double SigmaRuido){
+		double s = 0;
+		double s2 = 0;
+		for(int x1 = -a;x1 <= a;x1++) {
+			for(int y1 = -b;y1 <= b;y1++) {
+				s = s + ip1.getf(x + x1, y + y1);
+				s2 = s2 + ip1.getf(x + x1, y + y1) * ip1.getf(x + x1, y + y1);
+			}
+		}				
+		double num_ele = (2 * a + 1) * (2 * b + 1);
+		double media_local = s/( num_ele);
+		// Determinando alpha
+		double desvpad_local = s2/(num_ele - 1);
+		
+		desvpad_local = Math.sqrt(desvpad_local - num_ele * media_local * 
+				media_local/(num_ele - 1));
+		double alpha = SigmaRuido * SigmaRuido/(SigmaRuido * SigmaRuido + 
+				desvpad_local * desvpad_local); 
+		//alpha = 1;
+		Wier.setf(x, y, (float)((1 - alpha) * ip1.getf(x, y) + alpha * media_local));		
+		
+	}
+	
+    // Método para usar Filtro de Wier
+	// Lembrar que dimensao deve ser impar 
+	public static FloatProcessor Filtro_Wier(FloatProcessor ip1, 
+			 double sigma, int dimensao) throws Exception{
+		// Formato utilizando com a mesma ideia de Convolucao
+
+		int H = ip1.getHeight();int W = ip1.getWidth();
+		// O vetor de pesos precisa ser impar
+		if (dimensao % 2 == 0) {
+			throw new Exception();
+		}
+		
+		double[][] pesos = new double[dimensao][dimensao];
+		// Criando vetor de Um para pesos
+		for (int index = 0; index < dimensao; index++) {
+			for (int index2 = 0; index2 < dimensao; index2++) {
+				pesos[index][index2] = 1;
+			}
+		}		
+		
+		// Apesar de a e b serem iguais
+		// uma vez que pesos tem dimensao
+		// dimensaoxdimensao
+		// no codigo doi deixado a e b
+		// como coisas diferentes
+		int a = (pesos[0].length - 1)/2;
+		int b = (pesos.length - 1)/2;
+		double s;
+		FloatProcessor Filtro = new FloatProcessor(W, H);
+		
+		for (int y = b; y < H - b; y++) {
+			for (int x = a; x < W - a ; x++) {
+				s = 0;
+				if (a != 0 && b != 0) {
+					// pesos é tipo coluna
+					Prod_Wier(Filtro, x, y, a, b, ip1, sigma);
+				}else {
+					throw new Exception();
+				}
+			}
+		}
+		ImagePlus imp2 = new ImagePlus("Float", Filtro);
+		//imp2.show();
+		
+		return Filtro;
+	}	
+	
+	
+	
+	
+	
 }
 	
 
