@@ -89,8 +89,8 @@ public class Biblioteca {
 		desvmedip2 = DesviMed(ip2);// Retorna a média, desvio, minimo e maximo
 		cov = Cov(ip, ip2);// Retorna a covariância
 		
-		double c = (desvmedip[4] - desvmedip[3])/10000 * 
-						(desvmedip[4] - desvmedip[3])/10000; 
+		double c = (desvmedip[3] - desvmedip[2])/10000 * 
+						(desvmedip[3] - desvmedip[2])/10000; 
 		ssim = (2 * cov + c)/(desvmedip2[0] * desvmedip2[0] +  desvmedip[0] * desvmedip[0] + c) * 
 		(2 * desvmedip2[1] * desvmedip[1] + c)/(desvmedip2[1] * desvmedip2[1] + desvmedip[1] * desvmedip[1] + c); 
 		return ssim;
@@ -98,7 +98,6 @@ public class Biblioteca {
 	}
 	/////////////////////////////////////////////////////////////////////////
 
-	
 	// Dado um FloatProcessor, calcula a  desvio-padrão, média, minimo e maximo	
 	public static double[] DesviMed(FloatProcessor ip) {
 		int w = ip.getWidth();
@@ -221,12 +220,10 @@ public class Biblioteca {
 				}
 			}
 		}
-		ImagePlus imp2 = new ImagePlus("Float", Conv);
 		//imp2.show();
 		
 		return Conv;
 	}
-
 
 	/////////////////////////////////////////////////////////////////////////
     // Método para usar correlação - Igual Convolucao mudando
@@ -463,12 +460,102 @@ public class Biblioteca {
 		//imp2.show();
 		
 		return Filtro;
+	}
+	
+	/////////////////////////////////////////////////////////////////////////
+    // Método para Gerar Filtro Gaussiano
+	public static FloatProcessor GeraFiltroGauss(FloatProcessor fig, 
+			double sigmax, double sigmay) {
+		int width = (int) (2 * Math.ceil(3 * sigmax) + 1);
+		int height = (int) (2 * Math.ceil(3 * sigmay) + 1);
+		double x, y;
+		double[][] h = new double[height][width];
+		
+		// Gera Kernel
+		double soma = 0;
+		for (int index = 0; index < height; index++) {
+			for (int index2 = 0; index2 < width; index2++) {
+				x = index2 - Math.ceil(3 * sigmax);
+				y = index - Math.ceil(3 * sigmay);
+				h[index][index2] = Math.exp(-.5 * (x/sigmax * x/sigmax + 
+						y/sigmay * y/sigmay   ));
+				soma = soma + h[index][index2];
+			}			
+		}		
+		// Dividinfo os termos pela soma
+		Normaliza(h, soma);
+		FloatProcessor filtrado = new FloatProcessor(fig.getWidth(), 
+				fig.getHeight());
+		// Aplicando a convolucao
+		try {
+			filtrado = Convolucao(fig, h);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 			
+		return filtrado;
+		
+		
+		
+	}
+	
+	/////////////////////////////////////////////////////////////////////////
+    // Sobrecarga Método para Gerar Filtro Gaussiano
+	public static FloatProcessor GeraFiltroGauss(FloatProcessor fig, double sigma) {
+		int width = (int) (2 * Math.ceil(3 * sigma) + 1);
+		int height = (int) (2 * Math.ceil(3 * sigma) + 1);
+		double x, y;
+		double[][] h = new double[height][width];
+		
+		// Gera Kernel
+		double soma = 0;
+		for (int index = 0; index < height; index++) {
+			for (int index2 = 0; index2 < width; index2++) {
+				x = index2 - Math.ceil(3 * sigma);
+				y = index - Math.ceil(3 * sigma);
+				h[index][index2] = Math.exp(-.5 * (x/sigma * x/sigma + 
+						y/sigma * y/sigma   ));
+				soma = soma + h[index][index2];
+			}			
+		}
+		Normaliza(h, soma);
+		FloatProcessor filtrado = new FloatProcessor(fig.getWidth(), 
+				fig.getHeight());
+		// Aplicando a convolucao
+		try {
+			filtrado = Convolucao(fig, h);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 			
+		return filtrado;
+		
+	}
+	
+	/////////////////////////////////////////////////////////////////////////
+	// Método para Gerar Filtro Gaussiano (Normalizacao)
+	public static void Normaliza(double[][] matriz, double soma){
+		int width = matriz[0].length;
+		int height = matriz.length;
+		for (int index = 0; index < height; index++) {
+			for (int index2 = 0; index2 < width; index2++) {
+				matriz[index][index2] = matriz[index][index2]/soma;
+			}
+		}
 	}	
 	
-	
-	
-	
-	
+	/////////////////////////////////////////////////////////////////////////
+    // Método auxiliar para filtro de media
+	public static FloatProcessor Divide(FloatProcessor ip, double value) {
+		FloatProcessor ip2 = new FloatProcessor(ip.getWidth(),ip.getHeight()); 
+		for(int index2 = 0; index2 < ip.getHeight(); index2++) {			
+			for(int index = 0; index < ip.getWidth(); index++) {
+				ip2.setf(index, index2, (float)((double)ip.getf(index, index2)/value)); 
+			}
+		}
+		return ip2;
+	}
+
 }
 	
 

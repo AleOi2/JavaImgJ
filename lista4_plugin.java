@@ -46,9 +46,6 @@ public class lista4_plugin implements PlugInFilter {
 		IJ.log("O valor de NRMSE I1I0 é de " + NRMSE);
 		double SSIM = Biblioteca.SSIM(ipf2, ipf);
 		IJ.log("O valor de SSIM I1I0 é de " + SSIM);
-
-		
-		
 		
 		// Selecionando regiao homogenea
 		RecTangle Slice = new RecTangle(18,32,80,30,ipf);
@@ -57,8 +54,6 @@ public class lista4_plugin implements PlugInFilter {
 		IJ.log("Desvio padrao da regiao homogenea: " + desvmed[0]);
 		ImagePlus imp = new ImagePlus("Slice", Slice.ip); 
 		imp.show();
-
-
 		
 		FloatProcessor ipf3 = new FloatProcessor(w,h);
 		try {
