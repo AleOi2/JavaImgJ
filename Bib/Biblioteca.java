@@ -555,6 +555,57 @@ public class Biblioteca {
 		}
 		return ip2;
 	}
+	
+	public static FloatProcessor FiltroButter(FloatProcessor ip, double FreqCorte,
+			double n, int local) {
+		FloatProcessor ip2 = new FloatProcessor(ip.getWidth(),ip.getHeight()); 		
+		// local = 1 x e y no canto enquerdo da imagem 
+		// local = 2 x e y no meio da imagem 
+		double h;
+
+		switch(local) {
+		case 1:
+			for (int y = 0; y < ip.getHeight();y++) {
+				for (int x = 0; x < ip.getWidth();x++) {
+					h = Math.sqrt(1/(1 + Math.pow(((x * x + y * y)/ FreqCorte), n)));
+					ip2.setf(x, y, (float)h);
+				}
+				
+			}
+			break;
+
+		case 2:
+			
+			double center_x, center_y;		
+			// Se heigth par
+			if(ip.getWidth() % 2 == 0) {
+				center_x = ip.getWidth()/2;
+			}else {
+			// Se impar			
+				center_x = (ip.getWidth() - 1)/2;
+			}
+			// Se width par
+			if(ip.getHeight() % 2 == 0) {
+				center_y = ip.getHeight()/2;
+			}else {
+			// Se impar
+				center_y = (ip.getHeight() - 1)/2;			
+			}
+
+			for (int y = 0; y < ip.getHeight();y++) {
+				for (int x = 0; x < ip.getWidth();x++) {
+					h = Math.sqrt(1/(1 + Math.pow((((x - center_x) * (x - center_x) + 
+							(y - center_y) * (y - center_y))/ FreqCorte), n)));
+					ip2.setf(x, y, (float)h);
+				}
+				
+			}				
+			break;
+		}
+		return ip2;					
+		
+		
+	}
 
 }
 	
