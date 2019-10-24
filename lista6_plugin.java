@@ -35,9 +35,9 @@ public class lista6_plugin implements PlugInFilter {
 
 		// Calculos Imagem sem e com ruido 
 		double Emax = Biblioteca.EMax(ipf2, ipf);
-		//IJ.log("O valor de EMax I1I0 é de " + Emax);
+		IJ.log("O valor de EMax I1I0 é de " + Emax);
 		double NRMSE = Biblioteca.NRMSE(ipf2, ipf);
-		//IJ.log("O valor de NRMSE I1I0 é de " + NRMSE);
+		IJ.log("O valor de NRMSE I1I0 é de " + NRMSE);
 		double SSIM = Biblioteca.SSIM(ipf2, ipf);
 		IJ.log("O valor de SSIM I1I0 é de " + SSIM);
 
@@ -48,9 +48,9 @@ public class lista6_plugin implements PlugInFilter {
 		imp3.show();
 		// Calculos Imagem sem e com ruido 1.5
 		double Emax2 = Biblioteca.EMax(ipf2, ipf3);
-		//IJ.log("O valor de EMax I1.5I0 é de " + Emax2);
+		IJ.log("O valor de EMax I1.5I0 é de " + Emax2);
 		double NRMSE2 = Biblioteca.NRMSE(ipf2, ipf3);
-		//IJ.log("O valor de NRMSE I1.5I0 é de " + NRMSE2);
+		IJ.log("O valor de NRMSE I1.5I0 é de " + NRMSE2);
 		double SSIM2 = Biblioteca.SSIM(ipf2, ipf3);
 		IJ.log("O valor de SSIM I1.5I0 é de " + SSIM2);		
 
@@ -62,9 +62,9 @@ public class lista6_plugin implements PlugInFilter {
 		imp4.show();
 		// Calculos Imagem sem e com ruido 1.5
 		double Emax3 = Biblioteca.EMax(ipf2, ipf4);
-		//IJ.log("O valor de EMax I4.5I0 é de " + Emax3);
+		IJ.log("O valor de EMax I4.5I0 é de " + Emax3);
 		double NRMSE3 = Biblioteca.NRMSE(ipf2, ipf4);
-		//IJ.log("O valor de NRMSE I4.5I0 é de " + NRMSE3);
+		IJ.log("O valor de NRMSE I4.5I0 é de " + NRMSE3);
 		double SSIM3 = Biblioteca.SSIM(ipf2, ipf4);
 		IJ.log("O valor de SSIM I4.5I0 é de " + SSIM3);		
 
@@ -90,9 +90,9 @@ public class lista6_plugin implements PlugInFilter {
 		
 		// Cáculos
 		double Emax4 = Biblioteca.EMax(ipf2, ipf6);
-		//IJ.log("O valor de EMax WienI0 é de " + Emax4);
+		IJ.log("O valor de EMax WienI0 é de " + Emax4);
 		double NRMSE4 = Biblioteca.NRMSE(ipf2, ipf6);
-		//IJ.log("O valor de NRMSE WienI0 é de " + NRMSE4);
+		IJ.log("O valor de NRMSE WienI0 é de " + NRMSE4);
 		double SSIM4 = Biblioteca.SSIM(ipf2, ipf6);
 		IJ.log("O valor de SSIM WienI0 é de " + SSIM4);
 		
@@ -115,12 +115,13 @@ public class lista6_plugin implements PlugInFilter {
 		
 		// Cáculos
 		double Emax5 = Biblioteca.EMax(ipf2, ipf7);
-		//IJ.log("O valor de EMax MediaI0 é de " + Emax5);
+		IJ.log("O valor de EMax MediaI0 é de " + Emax5);
 		double NRMSE5 = Biblioteca.NRMSE(ipf2, ipf7);
-		//IJ.log("O valor de NRMSE MediaI0 é de " + NRMSE5);
+		IJ.log("O valor de NRMSE MediaI0 é de " + NRMSE5);
 		double SSIM5 = Biblioteca.SSIM(ipf2, ipf7);
 		IJ.log("O valor de SSIM MediaI0 é de " + SSIM5);
-				
+			
+	
 	}
 
 }
